@@ -1,0 +1,202 @@
+{%load static%}
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <link 
+        rel="stylesheet" 
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" 
+        crossorigin="anonymous"
+    >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.css">
+  
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i" rel="stylesheet">
+
+    <link href="{% static "css/main.css" %}"rel="stylesheet" media="all">
+    
+    <style type="text/css">
+      /* The main navbar color, set to the dark maroon from the sample image */
+      .bg-\[\#48060dff\] {
+          background-color: #48060dff !important;
+      }
+      .cardI{
+       background-color: #48060dff !important;
+      }
+      /* Custom style for the logo font and size */
+      .navbar-brand {
+        font-size: 20px;
+        font-family: sans-serif;
+        font-weight: 600; /* Made text a bit bolder */
+        /* Adjustment for spacing near the logo/icon */
+        padding-left: 0 !important; 
+        margin-right: 2rem !important; /* Added space to push content away from the logo */
+      }
+.admin{
+    text-decoration:none
+}
+      /* Style for the center links to be visually distinct */
+      .navbar-nav .nav-link {
+        /* Increased padding slightly for better spread */
+        padding-left: 1.5rem !important; 
+        padding-right: 1.5rem !important; 
+        transition: background-color 0.3s;
+        border-radius: 0.25rem;
+      }
+
+      .navbar-nav .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      /* Styles for the CTA buttons */
+      .cta {
+          text-decoration: none !important;
+          display: inline-block;
+          padding: 0.75rem 1.5rem; 
+          font-size: 1rem; 
+          font-weight: 600;
+          color: white;
+          background-color: #360308ff; /* Darker red from original file for the 'Donate Blood Now' fill */
+          border-radius: 9999px;
+          border: 0.5px solid white;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+          transition: background-color 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+      }
+      .cta:hover {
+        background-color: #48060dff; 
+        text-decoration: none;
+        transform: scale(1.05);
+        color: white;
+        border-color: white;
+      }
+      /* Styles specifically for the Admin button to match the open border look */
+      .admin-cta {
+          background-color: transparent !important; /* Make Admin button transparent */
+          border-color: white !important; /* White border for Admin button */
+          border-radius: 9999px !important; /* Ensure full pill shape for border buttons too */
+          padding: 0.75rem 1.5rem;
+      }
+      .admin-cta:hover {
+          background-color: rgba(255, 255, 255, 0.1) !important;
+      }
+      /* Styles specifically for the Donate Blood Now button to match the fill look */
+      .donate-cta {
+          /* Use the dark maroon background color for a filled look */
+          background-color: #48060dff !important;
+          border-radius: 9999px !important;
+      }
+
+      /* CUSTOM STYLE FOR THE ERROR ALERT */
+      .donor-alert-danger {
+          background-color: #48060dff; /* Matching Navbar/Card Header BG */
+          color: white; /* White text */
+          border-color: #360308ff;
+          text-align: center;
+          font-weight: bold;
+      }
+      .btn:hover{
+        color:white
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-[#48060dff] sticky-top pl-md-5 pl-lg-5">
+        
+        <a class="navbar-brand" href="/">
+            <i class="fas fa-hand-holding-heart"></i>  Blood Donation System
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto"> 
+                <li class="nav-item active">
+                    <a class="nav-link" href="/"><i class="fas fa-home"></i> Home</a>
+                </li>
+                <li class="nav-item active active">
+                    <a class="nav-link" href="/donor/donorlogin"><i class="fas fa-user"></i> Donor</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/patient/patientlogin"><i class="fas fa-bed"></i> Patient</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/#why-us-section"><i class="fas fa-info-circle"></i> Why Us</a>
+                </li>
+            </ul>
+
+            <div class="navbar-nav ml-auto"> 
+             <a
+              href="/adminlogin" style"text-decoration:none"
+              title="Admin use only"
+              class="text-white block border border-white hover:bg-[#48060dff] hover:text-[#48060dff] px-1 py-1 rounded-md text-base font-medium mt-2 text-center"
+            >
+                        <i class="fas fa-user-shield"></i>        
+            </a>
+            </div>
+        </div>
+    </nav>
+    <div class="page-wrapper p-t-45 p-b-50" style="padding-top: 40px;">
+        <div class="wrapper wrapper--w790">
+            <br><br><br>
+            <div class="card card-5">
+                <div class="cardI card-heading">
+                    <h2 class="title">Donor Login</h2>
+                </div>
+                <div class="card-body">
+                    
+                    {% if form.errors %}
+                        <div class="alert donor-alert-danger" role="alert" style="margin-bottom: 20px;">
+                            <i class="fas fa-exclamation-triangle"></i> Login Failed: {{ form.non_field_errors | default:"Donor not found. Please check your username and password." }}
+                        </div>
+                    {% endif %}
+                    
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="name">Username</div>
+                            <div class="value">
+                                <div class="input-group">
+                                    {% render_field form.username class="input--style-5"%}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="name">Password</div>
+                            <div class="value">
+                                <div class="input-group">
+                                    {% render_field form.password class="input--style-5" %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div>
+                                <button class="btn btn--radius-2" type="submit" style="background-color:#48060dff !important">Login</button>
+                            </div>
+                        </form>
+                    </form>
+                    <br>
+                    <p style="text-align: center;">Does not have an account ? <a style="text-decoration: none;" href="/donor/donorsignup">Click here to register</a></p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% include "blood/footer.html" %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

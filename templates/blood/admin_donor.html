@@ -1,0 +1,228 @@
+{% extends 'blood/adminbase.html' %}
+{% block content %}
+{% load widget_tweaks %}
+{%load static%}
+
+<style>
+/* --- MOBILE SPECIFIC STYLES to make the table fit (kept from last revision) --- */
+@media (max-width: 576px) {
+    /* 1. Reduce padding/margin inside table cells */
+    .table td, .table th {
+        padding: 0.5rem !important; /* Smaller padding */
+        vertical-align: middle;
+    }
+
+    /* 2. Make buttons smaller */
+    .btn-action-sm {
+        width: 50px !important; /* Smaller width for buttons */
+        padding: 0.3rem 0.5rem !important;
+        font-size: 0.7rem; /* Smaller font size */
+        display: inline-flex; /* Use flex to center icon/text if needed */
+        align-items: center;
+        justify-content: center;
+    }
+    /* 3. Reduce space around the container */
+    .container {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+    /* 4. Ensure the image is small */
+    .table img {
+        height: 30px !important;
+        width: 30px !important;
+    }
+    /* 5. Hide the text on mobile for the Action column */
+    .action-text {
+        display: none;
+    }
+
+    /* New style for search bars on small screen: Stack them vertically */
+    .search-row .form-group {
+        margin-bottom: 0.5rem; /* Reduce vertical spacing between search bars */
+    }
+
+    /* Refined styles for buttons in search group on mobile */
+    .input-group-append .btn {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+    .input-group-append .d-sm-inline {
+        display: none !important; /* Hide text on small screens for search/clear buttons */
+    }
+}
+
+/* --- Custom Alert Card Style for No Results (REFINED) --- */
+.custom-alert-card {
+    /* Positioning to float over content and center it */
+    position: absolute; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    
+    /* Card Sizing and appearance */
+    max-width: 450px; 
+    width: 90%; 
+    padding: 1.5rem 1rem; 
+    z-index: 1050; 
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); 
+    
+    /* Color matching the Navbar: #48060ff */
+    background-color: #48060dff !important; 
+    color: white;
+    border: none;
+    text-align: center;
+    display: flex; 
+    align-items: center;
+    justify-content: space-between;
+}
+.custom-alert-card p {
+    margin-bottom: 0;
+    flex-grow: 1; 
+    text-align: left; 
+    padding-right: 15px; 
+}
+
+/* Close Button Styling */
+.custom-alert-card .close {
+    color: white;
+    opacity: 1.0; 
+    font-size: 1.5rem; 
+    font-weight: 300; 
+    line-height: 1;
+    padding: 0;
+    margin-left: 15px; 
+    background: transparent;
+    border: none;
+}
+</style>
+
+<br><br>
+<div class="container px-1 px-sm-3">
+    <H4 class="text-center">DONOR DETAILS</H4><br>
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="alert alert-{{ message.tags }} custom-alert-card alert-dismissible fade show" role="alert">
+                    <p class="mb-0">{{ message }}</p>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    <form method="get" action="{% url 'admin-view-donor' %}">
+        <div class="row search-row mb-4">
+            
+            <div class="col-12 col-md-6">
+                <div class="input-group">
+                    <input type="text" name="blood_group" class="form-control" 
+                           placeholder="Search by Blood Group (e.g., O+)" aria-label="Search Blood Group"
+                           value="{{ request.GET.blood_group|default_if_none:'' }}">
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 mt-2 mt-md-0">
+                <div class="input-group">
+                    <input type="text" name="city" class="form-control" 
+                           placeholder="Search by City or Address" aria-label="Search City"
+                           value="{{ request.GET.city|default_if_none:'' }}">
+                    
+                    <div class="input-group-append">
+                        <button class="btn btn-dark" type="submit">
+                            <i class="fas fa-search"></i> <span class="d-none d-sm-inline">Search</span>
+                        </button>
+                        
+                        <a href="{% url 'admin-view-donor' %}" class="btn btn-secondary" style="margin-left: 5px;">
+                            <i class="fas fa-broom"></i> <span class="d-none d-sm-inline">Clear</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="table-responsive">
+        <table class="table table-light table-hover table-bordered table-striped">
+            <thead style="background-color: #48060dff; color: white;">
+                <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Profile</th>
+                    <th scope="col">Blood Group</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">Mobile</th>
+                    <th scope="col"><span class="d-none d-sm-inline">Action</span><i class="fas fa-edit d-sm-none"></i></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in donors %}
+                <tr>
+                    <td> {{t.get_name}}</td>
+                    <td> <img src="{% static t.profile_pic.url %}" alt="Profile Pic" height="40px" width="40px" /></td>
+                    <td>{{t.bloodgroup}}</td>
+                    <td>{{t.address}}</td>
+                    <td>{{t.mobile}}</td>
+                    
+                   <td class="text-right">
+    <a href="{% url 'update-donor' t.id %}" class="btn btn-primary badge-pill btn-action-sm">
+        <i class="fas fa-edit"></i> <span class="action-text d-none d-sm-inline">EDIT</span>
+    </a>
+    <a href="#" 
+        class="btn btn-danger badge-pill btn-action-sm delete-donor-btn"
+        data-toggle="modal"
+        data-target="#deleteConfirmationModal"
+        data-id="{{ t.id }}"
+        data-url-pattern="{% url 'delete-donor' 9999 %}"> <i class="fas fa-trash-alt"></i> <span class="action-text d-none d-sm-inline">DELETE</span>
+    </a>
+</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div> 
+</div><div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #48060dff; color: white; border-top-left-radius: 10px; border-top-right-radius: 10px;">
+                <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirmation Required</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white; opacity: 1;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <strong>Are you sure you want to delete this donor record?</strong>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <a id="modal-delete-ok-btn" href="#" class="btn btn-danger">Okay</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // This script dynamically updates the 'Okay' button's link when the modal opens.
+    document.addEventListener('DOMContentLoaded', function() {
+        // Use jQuery for Bootstrap modal events, which is typically available
+        $('#deleteConfirmationModal').on('show.bs.modal', function (event) {
+            // Button that triggered the modal (the delete button for the specific donor row)
+            const button = $(event.relatedTarget); 
+            
+            // Extract the donor ID and the URL pattern string from the button's data attributes
+            const donorId = button.data('id'); 
+            const urlPattern = button.data('url-pattern');
+            
+            // Get the 'Okay' button from the modal
+            const okButton = document.getElementById('modal-delete-ok-btn');
+
+            // Replace the placeholder (9999) with the actual donor ID
+            const finalUrl = urlPattern.replace('9999', donorId);
+            
+            // Set the 'Okay' button's href dynamically
+            okButton.href = finalUrl;
+        });
+    });
+</script>
+{% endblock content %}

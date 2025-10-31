@@ -1,0 +1,732 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Blood Donation Hero Section</title>
+    <!-- Assuming Bootstrap or a similar framework is loaded for utility classes like jumbotron, d-flex, container -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+      /*
+         * 1. The main hero container (xyz) is now set to cover 75% of the viewport height (75vh).
+         * 2. background-size: cover ensures the image always fills the container fully, reducing or enlarging as needed,
+         * which is typically what you want for a hero image.
+         * 3. background-attachment: fixed gives a subtle, modern parallax-like effect.
+         */
+      .xyz {
+        /* Adjustments for Background Image Sizing and Placement */
+        background-image: url('{% static "image/large.jpg" %}');
+        background-size: cover; /* Ensures image covers the container completely */
+        background-position: center; /* Centers the image */
+        background-repeat: no-repeat;
+        background-attachment: fixed; /* Parallax effect (optional) */
+
+        /* Guaranteed Height for Responsiveness */
+        min-height: 75vh; /* Ensures the hero section takes up 75% of the viewport height */
+        width: 100%;
+
+        /* Flex properties for vertical centering (inherited from jumbotron/d-flex, but reinforced) */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* * The overlay now acts as the content wrapper. We removed the redundant inner <section> and <div>
+         * so the overlay is directly centered by the parent .xyz flex container.
+         * The overlay's background-color provides the dark filter over the image.
+         */
+      .hero-overlay {
+        width: 90%;
+        height: 100%;
+        background-color: rgba(
+          0,
+          0,
+          0,
+          0.5
+        ) !important; /* Dark overlay color */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 3rem;
+        margin-top: 4%;
+      }
+
+      /* Custom styling for the main heading */
+      .main-heading {
+        font-size: 2.5rem !important; /* Base size for mobile */
+        color: white;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+      }
+
+      @media (min-width: 768px) {
+        /* Adjusts for medium-sized screens and up */
+        .main-heading {
+          font-size: 5rem !important; /* Larger size for desktop */
+        }
+      }
+
+      /* Custom styling for the jumbotron background image */
+      .hero-jumbotron {
+        margin-top: 0; /* Removing the unnecessary margin-top:5% */
+        /* This class is now primarily for the flex centering and is combined with .xyz in the HTML */
+      }
+
+      /* 💉 New CSS for Button Styling (Kept as is) */
+      .cta-button {
+        display: inline-block;
+        padding: 1rem 2.5rem;
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: white;
+        background-color: #360308ff;
+        border-radius: 9999px;
+        text-decoration: none;
+        border: none;
+        border:2px solid white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        margin-top: 1.5rem;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+      }
+
+      .cta-button:hover {
+        background-color: #48060dff;
+        text-decoration: none;
+        transform: scale(1.05);
+        color: white;
+      } /* Custom CSS for Card Hover Effect */
+      .card-transition {
+        transition: all 0.3s ease;
+      }
+      .card-transition:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+      .cards-main {
+        background-color: #48060dff;
+      }
+    </style>
+  </head>
+
+  <body>
+    {% include "blood/navbar.html" %}
+    <br />
+
+    <!-- 
+        CLEANUP: Removed redundant nesting. The 'xyz' class now applies the background image and min-height.
+        The 'hero-overlay' div applies the dark filter and centers the content.
+    -->
+    <section
+      id="section-jumbotron"
+      style="margin-bottom: 0px"
+      class="jumbotron jumbotron-fluid d-flex justify-content-center align-items-center xyz"
+    >
+      <!-- Overlay for better text contrast and content centering -->
+      <div class="hero-overlay">
+        <div class="container text-center text-white">
+          <h1
+            class="main-heading font-extrabold tracking-tight mb-6 p-2 rounded-lg bg-red-700/70 shadow-2xl"
+          >
+            Donate Blood, Save Lives!
+          </h1>
+
+          <h3
+            class="font-extrabold tracking-tight mb-6 p-2 rounded-lg bg-red-700/70 shadow-2xl"
+          >
+            Opportunities knock the door sometimes, so don’t let it go and
+            donate blood.
+          </h3>
+
+          <a href="/donor/donorsignup"  class="cta-button border border-2 border-white"> Donate Blood </a>
+        </div>
+      </div>
+    </section>
+<!-- This section should be inserted before the footer in index.html -->
+<section id="search" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 class="text-4xl font-extrabold tracking-tight text-black text-center mb-12">
+           Search For Blood
+        </h1>
+
+        <div class="flex flex-col lg:flex-row gap-8">
+
+            <div class="lg:w-1/2 w-full bg-white p-6 rounded-xl shadow-xl border border-gray-200">
+                <h3 class="text-2xl font-semibold mb-6 text-gray-800 border-b pb-3">
+                    Approved Blood Requests
+                </h3>
+                
+                <form id="requests-search-form" class="ajax-search-form flex gap-2 mb-6 p-3 bg-red-50 rounded-lg border border-red-200">
+                    
+                    <div class="w-1/4">
+                        <select name="req_blood_group"
+                                class="ajax-input block w-full text-sm pl-2 py-2 border-gray-300 bg-white focus:ring-red-500 focus:border-red-500 rounded-md">
+                            <option value="">Group</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+
+                    <div class="w-1/4">
+                        <input type="text" name="req_city"
+                            placeholder="City"
+                            class="ajax-input block w-full text-sm pl-2 py-2 border-gray-300 focus:ring-red-500 focus:border-red-500 rounded-md">
+                    </div>
+
+                    <div class="w-1/4">
+                        <button type="submit"
+                                class="w-full inline-flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700">
+                            Search
+                        </button>
+                    </div>
+
+                    <div class="w-1/4">
+                        <button type="button" 
+                                class="clear-search-btn w-full inline-flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md shadow-sm text-red-600 bg-white hover:bg-red-50 border border-red-600"
+                                data-target="requests">
+                            Clear
+                        </button>
+                    </div>
+                </form>
+                <div id="requests-list-wrapper">
+                    {% if approved_requests %}
+                        <div class="space-y-4">
+                            {% for req in approved_requests %}
+                                <div class="p-4 bg-red-50 rounded-lg shadow-sm flex items-center justify-between">
+                                    <div class="flex items-center space-x-4">
+                                        <span class="px-3 py-1 text-sm font-bold rounded-full text-white" 
+                                                style="background-color: #48060dff;">
+                                                {{ req.bloodgroup }}
+                                        </span>
+                                        
+                                        <div>
+                                            <p class="font-medium text-gray-700">
+                                                Request by: 
+                                                <span class="font-bold text-red-700">
+                                                    {{ req.request_by_patient.user.first_name|default:req.request_by_patient.user.username }}
+                                                </span>
+                                            </p>
+                                            <p class="text-sm text-gray-500 mt-0.5">
+                                                Unit: {{ req.unit }} ml | Date: {{ req.date|date:"M d, Y" }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs font-semibold text-green-600 border border-green-600 px-2 py-0.5 rounded">
+                                        APPROVED
+                                    </span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {% if search_req_blood_group or search_req_city %}
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-center font-medium shadow-sm">
+                                No matching blood requests found for your search.
+                            </div>
+                        {% else %}
+                            <p class="text-center text-gray-500 py-4">No approved blood requests currently listed.</p>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                
+            </div>
+
+            <div class="lg:w-1/2 w-full bg-white p-6 rounded-xl shadow-xl border border-gray-200">
+                <h3 class="text-2xl font-semibold mb-6 text-gray-800 border-b pb-3">
+                    Approved Donor Registrations
+                </h3>
+
+                <form id="donors-search-form" class="ajax-search-form flex gap-2 mb-6 p-3 bg-green-50 rounded-lg border border-green-200">
+                    
+                    <div class="w-1/4">
+                        <select name="don_blood_group"
+                                class="ajax-input block w-full text-sm pl-2 py-2 border-gray-300 bg-white focus:ring-green-500 focus:border-green-500 rounded-md">
+                            <option value="">Group</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+
+                    <div class="w-1/4">
+                        <input type="text" name="don_city"
+                            placeholder="City"
+                            class="ajax-input block w-full text-sm pl-2 py-2 border-gray-300 focus:ring-green-500 focus:border-green-500 rounded-md">
+                    </div>
+
+                    <div class="w-1/4">
+                        <button type="submit"
+                                class="w-full inline-flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700">
+                            Search
+                        </button>
+                    </div>
+
+                    <div class="w-1/4">
+                        <button type="button" 
+                                class="clear-search-btn w-full inline-flex items-center justify-center px-2 py-2 text-sm font-medium rounded-md shadow-sm text-green-600 bg-white hover:bg-green-50 border border-green-600"
+                                data-target="donors">
+                            Clear
+                        </button>
+                    </div>
+                </form>
+                <div id="donors-list-wrapper">
+                    {% if approved_donations %}
+                        <div class="space-y-4">
+                            {% for donate in approved_donations %}
+                                <div class="p-4 bg-green-50 rounded-lg shadow-sm flex items-center justify-between">
+                                    <div class="flex items-center space-x-4">
+                                        <span class="px-3 py-1 text-sm font-bold rounded-full text-white" 
+                                                style="background-color: #48060dff;">
+                                                {{ donate.bloodgroup }}
+                                        </span>
+                                        
+                                        <div>
+                                            <p class="font-medium text-gray-700">
+                                                Donor: 
+                                                <span class="font-bold text-green-700">
+                                                    {{ donate.donor.user.first_name|default:donate.donor.user.username }}
+                                                </span>
+                                            </p>
+                                            <p class="text-sm text-gray-500 mt-0.5">
+                                                Unit: {{ donate.unit }} ml | Date: {{ donate.date|date:"M d, Y" }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs font-semibold text-green-600 border border-green-600 px-2 py-0.5 rounded">
+                                        REGISTERED
+                                    </span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {% if search_don_blood_group or search_don_city %}
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-center font-medium shadow-sm">
+                                No matching donor registrations found for your search.
+                            </div>
+                        {% else %}
+                            <p class="text-center text-gray-500 py-4">No new donation registrations currently listed.</p>
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </div>
+        
+        <div class="text-center mt-10">
+            <p class="text-lg text-gray-700 mb-4 font-semibold">
+                Want to help? Register as a donor or request blood for a loved one.
+            </p>
+            <a href="/donor/donorsignup" 
+               class="inline-flex items-center justify-center px-6 py-3 
+                            border border-transparent text-lg font-medium 
+                            rounded-lg shadow-lg 
+                            text-white bg-[#48060dff] hover:bg-opacity-90 
+                            transition duration-150 ease-in-out">
+                Register as Donor
+            </a>
+        </div>
+
+    </div>
+</section>
+
+    <header class="text-center mb-12" id="why-us-section">
+      <h1 class="text-4xl font-extrabold text-black mt-12">WHY US!</h1>
+      <p class="text-lg text-black">
+        Your decision to donate is the hardest part. We make everything else
+        simple, safe, and worthwhile.
+      </p>
+    </header>
+    <!-- Grid Container (Original Card Grid Content) -->
+    <!-- Grid responsiveness: 1 col on mobile, 2 cols on small, 3 cols on medium/desktop -->
+    <div
+      class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 lg:gap-8 mb-16"
+    >
+      <!-- Card 1: Rapid Deployment -->
+      <div
+        class="cards-main p-6 rounded-xl shadow-lg border border-gray-100 card-transition"
+      >
+        <h2 class="text-xl font-bold text-white mb-3">
+          ⏱️ Real-Time Local Impact<br><br>
+        </h2>
+        <p class="text-white text-base">
+          When you donate through our platform, your generosity is immediately
+          visible. We provide a verified, direct link between your donation and
+          local hospitals. See your blood move from the center to a patient in
+          need, ensuring your selfless act makes a difference right here in your
+          community when it matters most.
+        </p>
+      </div>
+
+      <!-- Card 2: Secure by Design -->
+      <div
+        class="cards-main p-6 rounded-xl shadow-lg border border-gray-100 card-transition"
+      >
+        <h2 class="text-xl font-bold text-white mb-3">
+          ✅ Certified Safety <br><br>
+        </h2>
+        <p class="text-white text-base">
+          Donor and recipient safety is our highest priority. We partner only
+          with certified medical facilities and professional phlebotomists who
+          adhere to the strictest national standards. Every part of the process,
+          from health screening to collection and storage, is monitored to
+          guarantee a completely secure and risk-free donation experience.
+        </p>
+      </div>
+
+      <!-- Card 3: Advanced Analytics -->
+      <div
+        class="cards-main p-6 rounded-xl shadow-lg border border-gray-100 card-transition"
+      >
+        <h2 class="text-xl font-bold text-white mb-3">
+          📅 Effortless Management<br><br>
+        </h2>
+        <p class="text-white text-base">
+          We respect your time. Our website makes scheduling your donation as
+          easy as booking a movie ticket. Use our intuitive interface to find
+          nearby drives, view open slots, and reschedule appointments instantly.
+          We handle the logistics so you can focus on the single most important
+          task: being a lifesaver.
+        </p>
+      </div>
+
+      <!-- Card 4: Seamless Scaling -->
+      <div
+        class="cards-main p-6 rounded-xl shadow-lg border border-gray-100 card-transition"
+      >
+        <h2 class="text-xl font-bold text-white mb-3">
+          🤝 Join a Lifesaving Community<br><br>
+        </h2>
+        <p class="text-white text-base">
+          You are part of a vital chain of compassion. Our platform connects you
+          with fellow committed donors and the patients whose lives you touch.
+          Beyond the physical act, you gain access to an exclusive community
+          dedicated to supporting the blood supply, fostering a collective sense
+          of purpose and belonging.
+        </p>
+      </div>
+
+      <!-- Card 5: Blazing Fast Speed -->
+      <div
+        class="cards-main p-6 rounded-xl shadow-lg border border-gray-100 card-transition"
+      >
+        <h2 class="text-xl font-bold text-white mb-3">
+          🏆 Tracking Your Donor Journey<br><br>
+        </h2>
+        <p class="text-white text-base">
+          Your dedication deserves recognition. We provide personalized Donor
+          Impact Reports that show you the estimated number of lives your blood
+          has helped save. Track your milestones, earn virtual badges, and feel
+          the tangible satisfaction of seeing your health and commitment
+          translate directly into community wellness.
+        </p>
+      </div>
+
+      <!-- Card 6: Collaborative Tools -->
+      <div
+        class="cards-main p-6 rounded-xl shadow-lg border border-gray-100 card-transition"
+      >
+        <h2 class="text-xl font-bold text-white mb-3">
+          💯 Our Mission: Zero Profit, Max Impact<br><br>
+        </h2>
+        <p class="text-white text-base">
+          We are a mission-driven organization, committed solely to the cause of
+          life. This means 100% of the focus is on maintaining an adequate and
+          safe blood supply. We ensure maximum efficiency so that every resource
+          goes toward critical operations, making your donation an act of pure,
+          non-remunerated altruism.
+        </p>
+      </div>
+    </div>
+<section class="py-16 md:py-24   text-white rounded-xl shadow-2xl mx-auto max-w-6xl" style="background-color: #360308ff;">
+        <div class="container mx-auto px-4 text-center">
+            
+            <!-- Headline -->
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
+                Your Single Act Can Spark Endless Hope.
+            </h2>
+            
+            <!-- Subtext -->
+            <p class="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
+               Join our community of heroes. Every blood donation makes a critical, lifesaving difference for patients nearby.
+            </p>
+            
+            <!-- Buttons / Actions -->
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                
+                <!-- Primary Button (Solid Fill) -->
+                <a href="/donor/donorsignup" 
+                   class="inline-flex items-center justify-center px-8 py-3 
+                          border-2 border-cta-blue text-base font-medium 
+                          rounded-lg 
+                          text-cta-blue hover:bg-cta-blue hover:text-white 
+                          focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cta-blue 
+                          transition duration-150 ease-in-out">
+                    Donate Blood
+                </a>
+                
+                <!-- Secondary Button (Outline) -->
+                <a href="/patient/patientlogin" 
+                   class="inline-flex items-center justify-center px-8 py-3 
+                          border-2 border-cta-blue text-base font-medium 
+                          rounded-lg 
+                          text-cta-blue hover:bg-cta-blue hover:text-white 
+                          focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cta-blue 
+                          transition duration-150 ease-in-out">
+                    Request for your Blood Group
+                </a>
+            </div>
+
+        </div>
+    </section>
+    <br><br><br><br>
+    {% include "blood/footer.html" %}
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+            colors: {
+              primary: "#4f46e5",
+              surface: "#f9fafb",
+            },
+          },
+        },
+      };
+    </script>
+    <script>
+    // 1. Get references to the elements
+    const requestsForm = document.getElementById('requests-search-form');
+    const donorsForm = document.getElementById('donors-search-form');
+    const requestsWrapper = document.getElementById('requests-list-wrapper');
+    const donorsWrapper = document.getElementById('donors-list-wrapper');
+
+    // 2. Define HTML rendering functions using JavaScript template literals
+    // These functions rebuild the HTML using the raw data received from Django
+    function renderRequestsList(data, searchBloodGroup, searchCity) {
+        // Handle No Data Found case
+        if (data.length === 0) {
+            if (searchBloodGroup || searchCity) {
+                return `
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-center font-medium shadow-sm">
+                        No matching blood requests found for your search.
+                    </div>
+                `;
+            } else {
+                return '<p class="text-center text-gray-500 py-4">No approved blood requests currently listed.</p>';
+            }
+        }
+
+        // Build list items
+        const itemsHtml = data.map(req => `
+            <div class="p-4 bg-red-50 rounded-lg shadow-sm flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <span class="px-3 py-1 text-sm font-bold rounded-full text-white" 
+                            style="background-color: #48060dff;">
+                            ${req.bloodgroup}
+                    </span>
+                    
+                    <div>
+                        <p class="font-medium text-gray-700">
+                            Request by: 
+                            <span class="font-bold text-red-700">
+                                ${req.name}
+                            </span>
+                        </p>
+                        <p class="text-sm text-gray-500 mt-0.5">
+                            Unit: ${req.unit} ml | Date: ${req.date}
+                        </p>
+                    </div>
+                </div>
+                <span class="text-xs font-semibold text-green-600 border border-green-600 px-2 py-0.5 rounded">
+                    APPROVED
+                </span>
+            </div>
+        `).join('');
+
+        return `<div class="space-y-4">${itemsHtml}</div>`;
+    }
+
+    function renderDonorsList(data, searchBloodGroup, searchCity) {
+        // Handle No Data Found case
+        if (data.length === 0) {
+            if (searchBloodGroup || searchCity) {
+                return `
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-center font-medium shadow-sm">
+                        No matching donor registrations found for your search.
+                    </div>
+                `;
+            } else {
+                return '<p class="text-center text-gray-500 py-4">No new donation registrations currently listed.</p>';
+            }
+        }
+        
+        // Build list items
+        const itemsHtml = data.map(donate => `
+            <div class="p-4 bg-green-50 rounded-lg shadow-sm flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <span class="px-3 py-1 text-sm font-bold rounded-full text-white" 
+                            style="background-color: #48060dff;">
+                            ${donate.bloodgroup}
+                    </span>
+                    
+                    <div>
+                        <p class="font-medium text-gray-700">
+                            Donor: 
+                            <span class="font-bold text-green-700">
+                                ${donate.name}
+                            </span>
+                        </p>
+                        <p class="text-sm text-gray-500 mt-0.5">
+                            Unit: ${donate.unit} ml | Date: ${donate.date}
+                        </p>
+                    </div>
+                </div>
+                <span class="text-xs font-semibold text-green-600 border border-green-600 px-2 py-0.5 rounded">
+                    REGISTERED
+                </span>
+            </div>
+        `).join('');
+
+        return `<div class="space-y-4">${itemsHtml}</div>`;
+    }
+
+    // 3. Define the main AJAX function
+    async function updateLists(event) {
+        event.preventDefault(); // Stop the default page reload
+        
+        const url = window.location.href.split('?')[0]; 
+        
+        // Combine parameters from both forms
+        const params = new URLSearchParams();
+        const forms = [requestsForm, donorsForm];
+        forms.forEach(form => {
+            const formData = new FormData(form);
+            for (const [key, value] of formData.entries()) {
+                if (value) params.append(key, value);
+            }
+        });
+        
+        // Update form inputs to reflect the search value (needed for text inputs on 'input' event)
+        const currentReqGroup = requestsForm.querySelector('select[name="req_blood_group"]').value;
+        const currentReqCity = requestsForm.querySelector('input[name="req_city"]').value;
+        const currentDonGroup = donorsForm.querySelector('select[name="don_blood_group"]').value;
+        const currentDonCity = donorsForm.querySelector('input[name="don_city"]').value;
+
+        // 4. Display Loading State
+        requestsWrapper.innerHTML = '<p class="text-center text-red-500 py-4 font-semibold">Searching for requests...</p>';
+        donorsWrapper.innerHTML = '<p class="text-center text-green-500 py-4 font-semibold">Searching for donors...</p>';
+
+
+        try {
+            // 5. Send the AJAX request
+            const response = await fetch(`${url}?${params.toString()}`, {
+                method: 'GET',
+                // This header tells the Django view this is an AJAX request
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+
+            // 6. Update the content using JavaScript rendering functions
+            requestsWrapper.innerHTML = renderRequestsList(
+                data.requests_data, 
+                data.search_req_blood_group, 
+                data.search_req_city
+            );
+            donorsWrapper.innerHTML = renderDonorsList(
+                data.donations_data,
+                data.search_don_blood_group,
+                data.search_don_city
+            );
+            
+            // 7. Update the browser's URL without reloading the page
+            history.pushState(null, '', `?${params.toString()}`);
+
+        } catch (error) {
+            console.error("AJAX Search Error:", error);
+            requestsWrapper.innerHTML = '<p class="text-center text-red-700 py-4 font-semibold">An error occurred while fetching requests.</p>';
+            donorsWrapper.innerHTML = '<p class="text-center text-red-700 py-4 font-semibold">An error occurred while fetching donors.</p>';
+        }
+    }
+
+    // 8. Attach event listeners
+    // Listen for form submission (when user clicks the Search button)
+    requestsForm.addEventListener('submit', updateLists);
+    donorsForm.addEventListener('submit', updateLists);
+    
+    // Optional: Listen for instant changes on the dropdowns/inputs
+    document.querySelectorAll('.ajax-input').forEach(input => {
+        // Use 'input' for text fields (typing) and 'change' for dropdowns (selecting)
+        input.addEventListener(input.type === 'text' ? 'input' : 'change', updateLists);
+    });
+
+</script><script>
+    // ... (Your existing code for get references to the elements, renderRequestsList, renderDonorsList, and updateLists) ...
+
+    // New function to clear search and re-run the AJAX request
+    function clearSearch(event) {
+        event.preventDefault();
+        
+        const target = event.currentTarget.dataset.target;
+        let formToClear;
+
+        if (target === 'requests') {
+            formToClear = requestsForm;
+        } else if (target === 'donors') {
+            formToClear = donorsForm;
+        } else {
+            return;
+        }
+
+        // --- THE FIX: Explicitly set the values to their default empty state ---
+        
+        // 1. Clear Dropdown/Select: Set its value to the first option's value (which is "")
+        const select = formToClear.querySelector('select');
+        if (select) {
+            select.value = '';
+        }
+        
+        // 2. Clear Text Input: Set its value to an empty string
+        const input = formToClear.querySelector('input[type="text"]');
+        if (input) {
+            input.value = '';
+        }
+
+        // --- End FIX ---
+        
+        // Trigger a new search with empty parameters to show all results
+        // This will now use the empty values we just set on the form elements
+        updateLists({preventDefault: () => {}}); 
+    }
+
+    // 8. Attach event listeners
+    // ... existing listeners ...
+
+    // Add listeners for the new clear buttons
+    document.querySelectorAll('.clear-search-btn').forEach(button => {
+        button.addEventListener('click', clearSearch);
+    });
+
+</script>
+  </body>
+</html>

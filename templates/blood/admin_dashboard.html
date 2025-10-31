@@ -1,0 +1,216 @@
+{% extends 'blood/adminbase.html' %}
+{% block content %}
+{% load widget_tweaks %}
+
+<style>
+/* --- Card and Text Styling --- */
+.card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    height: 100%; /* Ensures uniform height in a row */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+    text-align: center;
+    padding: 1rem; /* Adjust padding for better look */
+}
+
+/* Style for Blood Group Heading */
+.blood h2 {
+    color: #48060dff;
+    font-size: 1.5rem; 
+    margin-bottom: 0;
+}
+/* Style for Blood Drop Icon */
+.blood .fa-tint {
+    color: #f44336; 
+}
+/* Style for Stat Icons */
+.blood i:not(.fa-tint) {
+    font-size: 2rem;
+    color: #48060dff;
+}
+
+/* Style for Unit/Value Display */
+.card-body > div:nth-child(2) {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 0.5rem; /* Space between icon/header and value */
+}
+
+/* --- Responsive Fix: 2 Cards per line on Mobile --- */
+
+/* Add margin bottom to each card column on mobile to prevent them from touching */
+@media (max-width: 576px) {
+    /* Target columns that are 6 units wide on XS screens */
+    .row > .col-6 {
+        margin-bottom: 1rem;
+    }
+}
+</style>
+
+<div class="container mt-4">
+
+    <div class="row">
+        <div class="col-6 col-sm-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="blood">
+                        <h2>A+ <i class="fas fa-tint"></i></h2>
+                    </div>
+                    <div>
+                        {{A1.unit}}
+                    </div> 
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-sm-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="blood">
+                        <h2>B+ <i class="fas fa-tint"></i></h2>
+                    </div>
+                    <div>
+                        {{B1.unit}}
+                    </div> 
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-sm-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="blood">
+                        <h2>O+ <i class="fas fa-tint"></i></h2>
+                    </div>
+                    <div>
+                        {{O1.unit}}
+                    </div> 
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-sm-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="blood">
+                        <h2>AB+ <i class="fas fa-tint"></i></h2>
+                    </div>
+                    <div>
+                        {{AB1.unit}}
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-6 col-sm-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="blood">
+                        <h2>A- <i class="fas fa-tint"></i></h2>
+                    </div>
+                    <div>
+                        {{A2.unit}}
+                    </div> 
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-sm-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="blood">
+                        <h2>B- <i class="fas fa-tint"></i></h2>
+                    </div>
+                    <div>
+                        {{B2.unit}}
+                    </div> 
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-sm-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="blood">
+                        <h2>O- <i class="fas fa-tint"></i></h2>
+                    </div>
+                    <div>
+                        {{O2.unit}}
+                    </div> 
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-sm-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="blood">
+                        <h2>AB- <i class="fas fa-tint"></i></h2>
+                    </div>
+                    <div>
+                        {{AB2.unit}}
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-4">
+
+    <div class="row">
+        <div class="col-6 col-sm-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="blood">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div>
+                        Total Donors <br>
+                        {{totaldonors}}
+                    </div> 
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-sm-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="blood">
+                        <i class="fas fa-spinner"></i>
+                    </div>
+                    <div>
+                         Total Requests <br>
+                        {{totalrequest}}
+                    </div> 
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-sm-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="blood">
+                        <i class="far fa-check-circle"></i>
+                    </div>
+                    <div style="font-size:17px">
+                        Approved Requests <br>
+                        {{totalapprovedrequest}}
+                    </div> 
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-sm-3">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="blood">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <div>
+                        Total Blood Unit  <br>
+                       {{totalbloodunit}}(in ml) 
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

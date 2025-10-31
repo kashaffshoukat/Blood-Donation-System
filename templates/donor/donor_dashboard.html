@@ -1,0 +1,38 @@
+{% extends 'donor/donorbase.html' %}
+{% block content %}
+<br><br>
+<div class="container">
+
+
+    <div class="row">
+
+      
+
+     
+
+      
+     
+      
+      <div class="col-sm-3 mt-4"> 
+        <div class="card bg-light">
+            <div class="card-body">
+                <div class="blood">
+                    <i class="fas fa-user-cog xyz"></i>
+                </div><br>
+                <div>
+                    <strong>Manage Profile</strong> <br>
+                    Update / Delete Details
+                </div>
+                <a href="{% url 'donor_profile_management' %}" class="btn btn-sm btn-info mt-3" style="background-color:#48060dff !important; border-color: #48060dff;">
+                    Go to Profile
+                </a>                          
+            </div>
+        </div>
+      </div>
+      </div>
+
+
+</div>
+
+ 
+{% endblock content %}

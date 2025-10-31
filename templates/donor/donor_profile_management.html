@@ -1,0 +1,97 @@
+{% extends 'donor/donorbase.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2><i class="fas fa-user-cog"></i> Manage Your Profile</h2>
+    <hr>
+    
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="card shadow mb-4">
+        <div class="card-header" style="background-color:#48060dff !important;">
+            <h4 class="text-white">Update Donor Details</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST" autocomplete="off" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <h5 class="mt-3">Account Information</h5>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="id_first_name">First Name</label>
+                        {% render_field userForm.first_name class="form-control" %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="id_last_name">Last Name</label>
+                        {% render_field userForm.last_name class="form-control" %}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="id_username">Username</label>
+                    {% render_field userForm.username class="form-control" %}
+                </div>
+                
+                <hr>
+
+                <h5 class="mt-4">Donor Information</h5>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="id_bloodgroup">Blood Group</label>
+                        {% render_field donorForm.bloodgroup class="form-control" %}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="id_mobile">Mobile</label>
+                        {% render_field donorForm.mobile class="form-control" %}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="id_address">Address</label>
+                    {% render_field donorForm.address class="form-control" %}
+                </div>
+                <div class="mb-3">
+                    <label for="id_profile_pic">Profile Picture</label>
+                    {% if donor.profile_pic %}
+                        <p>Current: <a href="{{ donor.profile_pic.url }}" target="_blank">View Current Picture</a> | Check the box below to clear.</p>
+                    {% endif %}
+                    {% render_field donorForm.profile_pic class="form-control-file" %}
+                    {% render_field donorForm.profile_pic.clear_field %}
+                    <label class="form-check-label" for="{{ donorForm.profile_pic.clear_field.id_for_label }}">Clear Profile Picture</label>
+                </div>
+
+                <button type="submit" class="btn btn-info btn-lg mt-4" style="background-color:#48060dff !important; border-color: #48060dff;">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="card shadow mb-4">
+        <div class="card-header  text-white" style="background-color:red !important">
+            <h4>Delete Account</h4>
+        </div>
+        <div class="card-body">
+            <p>
+                <b>WARNING</b> This action is permanent. Deleting your account will remove all your data, including profile details and history.
+            </p>
+            <a href="{% url 'delete_donor_profile' %}" 
+               onclick="return confirm('Are you absolutely sure you want to delete your account? This action cannot be undone.');" 
+               class="btn btn-lg mt-3"  style="background-color:red !important;color:white">
+               <i class="fas fa-trash"></i> Delete My Account Permanently
+            </a>
+        </div>
+    </div>
+
+</div>
+{% endblock content %}

@@ -1,0 +1,148 @@
+{% extends 'blood/adminbase.html' %}
+{% block content %}
+{% load widget_tweaks %}
+{%load static%}
+
+<style>
+/* --- 1. GENERAL TABLE STYLING FOR RESPONSIVENESS --- */
+
+/* Ensure buttons are compact on small screens */
+@media (max-width: 576px) {
+    /* Reduce padding/margin inside table cells */
+    .table td, .table th {
+        padding: 0.5rem 0.3rem !important; /* Smaller padding */
+        vertical-align: middle;
+        font-size: 0.8rem; /* Slightly smaller font for dense data */
+    }
+
+    /* Make action buttons very small and icon-only */
+    .btn-action-sm {
+        width: 40px !important; 
+        padding: 0.3rem 0.4rem !important;
+        font-size: 0.7rem; 
+        display: inline-flex; 
+        align-items: center;
+        justify-content: center;
+    }
+    
+    
+
+    /* Ensure the profile image is small */
+    .table img {
+        height: 30px !important;
+        width: 30px !important;
+    }
+
+    /* Target and shrink column content: Age and Disease */
+    .table-shrink-sm {
+        max-width: 60px; /* Force the content to wrap/shrink */
+        word-break: break-word;
+        white-space: normal;
+    }
+}
+
+/* --- 2. MODAL STYLE FIX (Recommended for Consistency) --- */
+.modal-content {
+    border-radius: 10px;
+}
+</style>
+
+<br><br>
+<div class="container px-2">
+    <H4 class="text-center"><strong>PATIENT DETAILS</strong></H4><br>
+
+    <div class="table-responsive">
+        <table class="table table-light table-hover table-bordered table-striped">
+            <thead style="background-color: #48060dff; color: white;">
+                <tr>
+                    <th scope="col">Name</th> 
+                    
+                    <th scope="col">Profile</th>
+                    
+                    <th scope="col">Blood Group</th>
+                    
+                    <th scope="col" class="table-shrink-sm">Age</th> 
+                    
+                    <th scope="col" class="table-shrink-sm">Disease</th>
+                    
+                    <th scope="col">Mobile</th>
+                    
+                    <th scope="col">
+                        <span class="d-sm-inline">Action</span>
+                         </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in patients %}
+                <tr>
+                    <td> {{t.get_name}}</td>
+                    <td> <img src="{% static t.profile_pic.url %}" alt="Profile Pic" height="40px" width="40px" /></td>
+                    <td>{{t.bloodgroup}}</td>
+                    <td class="table-shrink-sm">{{t.age}}</td> <td class="table-shrink-sm">{{t.disease}}</td> <td>{{t.mobile}}</td>
+                    
+                    <td class="text-right">
+                        <a href="{% url 'update-patient' t.id %}" class="btn btn-primary badge-pill btn-action-sm">
+                            <i class="fas fa-edit"></i> <span class="action-text d-none d-sm-inline">EDIT</span>
+                        </a>
+                        <a href="#" 
+                            class="btn btn-danger badge-pill btn-action-sm delete-patient-btn"
+                            data-toggle="modal"
+                            data-target="#deleteConfirmationModal"
+                            data-id="{{ t.id }}"
+                            data-url-pattern="{% url 'delete-patient' 9999 %}"> 
+                            <i class="fas fa-trash-alt"></i> <span class="action-text d-none d-sm-inline">DELETE</span>
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        
+        </table>
+    </div> 
+    </div>
+
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #48060dff; color: white; border-top-left-radius: 10px; border-top-right-radius: 10px;">
+                <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirmation Required</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: white; opacity: 1;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                **Are you sure you want to delete this patient record?**
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <a id="modal-delete-ok-btn" href="#" class="btn btn-danger">Okay</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // This script dynamically updates the 'Okay' button's link when the modal opens.
+    document.addEventListener('DOMContentLoaded', function() {
+        // Use jQuery for Bootstrap modal events, which is typically available
+        $('#deleteConfirmationModal').on('show.bs.modal', function (event) {
+            // Button that triggered the modal (the delete button for the specific patient row)
+            const button = $(event.relatedTarget); 
+            
+            // Extract the patient ID and the URL pattern string from the button's data attributes
+            const patientId = button.data('id'); 
+            const urlPattern = button.data('url-pattern');
+            
+            // Get the 'Okay' button from the modal
+            const okButton = document.getElementById('modal-delete-ok-btn');
+
+            // Replace the placeholder (9999) with the actual patient ID
+            const finalUrl = urlPattern.replace('9999', patientId);
+            
+            // Set the 'Okay' button's href dynamically
+            okButton.href = finalUrl;
+        });
+    });
+</script>
+{% endblock content %}

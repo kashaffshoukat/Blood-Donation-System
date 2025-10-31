@@ -1,0 +1,122 @@
+{% extends 'blood/adminbase.html' %}
+{% block content %}
+{% load widget_tweaks %}
+{%load static%}
+
+<style>
+/* CSS to hide the standard table on small screens */
+.table-responsive-desktop {
+    display: none;
+}
+
+/* CSS to show the custom card layout on small screens */
+.table-responsive-mobile {
+    display: block;
+}
+
+/* Media query to switch layouts at a medium breakpoint (e.g., 768px) */
+@media (min-width: 768px) {
+    .table-responsive-desktop {
+        display: table; /* Re-show the standard table */
+    }
+    .table-responsive-mobile {
+        display: none; /* Hide the cards */
+    }
+}
+
+/* Custom styling for the action buttons */
+.action-card {
+    display: flex;
+    justify-content: space-between; /* Space out the buttons */
+    margin-top: 10px;
+}
+
+/* Ensure buttons take full width on mobile if needed, but here we space them out */
+.action-card .btn {
+    flex-grow: 1; /* Make buttons grow to fill space */
+    margin: 0 5px; /* Small gap between buttons */
+}
+/* Ensure the Approve button is distinct */
+.action-card .btn-primary {
+    background-color: #4CAF50; /* Example: Use Green for Approve */
+    border-color: #4CAF50;
+}
+.action-card .btn-danger {
+    background-color: #f44336; /* Example: Use Red for Reject */
+    border-color: #f44336;
+}
+</style>
+
+<br><br>
+<div class="container">
+    {% if requests %}
+    <H4 class="text-center">Blood Requested</H4><br>
+    
+    {% if message %}
+    <h5 class="text-center" style="color: red;"> {{message}}</h5><br>
+    {% endif %}
+
+    <div class="table-responsive-desktop">
+        <table class="table table-light table-hover table-bordered table-striped">
+            <thead style="background-color: #48060dff; color: white;">
+                <tr>
+                    <th scope="col">Patient Name</th>
+                    <th scope="col">Age</th>
+                    <th scope="col">Reason</th>
+                    <th scope="col">Blood Group</th>
+                    <th scope="col">Unit (in ml)</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Status</th>
+                    <th class="text-center" scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in requests %}
+                <tr>
+                    <td> {{t.patient_name}}</td>
+                    <td>{{t.patient_age}}</td>
+                    <td>{{t.reason}}</td>
+                    <td>{{t.bloodgroup}}</td>
+                    <td>{{t.unit}}</td>
+                    <td>{{t.date|date:"Y-m-d"}}</td> <td>{{t.status}}</td>
+                    
+                    <td class="text-center">
+                        <a href="{% url 'update-approve-status' t.id %}" class="btn btn-primary badge-pill" style="width: 100px;">Approve</a>
+                        <a href="{% url 'update-reject-status' t.id %}" class="btn btn-danger badge-pill" style="width: 80px;">Reject</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="table-responsive-mobile">
+        {% for t in requests %}
+        <div class="card mb-3 shadow-sm border-secondary">
+            <div class="card-header" style="background-color: #48060dff; color: white; font-weight: bold;">
+                Blood Request: {{ t.bloodgroup }} ({{ t.unit }}ml)
+            </div>
+            <div class="card-body">
+                <p class="card-text"><strong>Patient:</strong> {{ t.patient_name }} ({{ t.patient_age }} years)</p>
+                <p class="card-text"><strong>Reason:</strong> {{ t.reason }}</p>
+                <p class="card-text"><strong>Date:</strong> {{ t.date|date:"M d, Y" }}</p>
+                <p class="card-text"><strong>Status:</strong> <span class="badge badge-warning">{{ t.status }}</span></p>
+                
+                <hr>
+
+                <div class="action-card">
+                    <a href="{% url 'update-approve-status' t.id %}" class="btn btn-primary badge-pill">Approve</a>
+                    <a href="{% url 'update-reject-status' t.id %}" class="btn btn-danger badge-pill">Reject</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+{% else %}
+    <h5 class="text-center">No Blood Request By Patient / Donor !</h5>
+{% endif %}
+
+</div>
+
+{% endblock content %}

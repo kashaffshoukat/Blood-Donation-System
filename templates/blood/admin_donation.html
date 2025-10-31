@@ -1,0 +1,192 @@
+{% extends 'blood/adminbase.html' %}
+{% block content %}
+{% load widget_tweaks %}
+{%load static%}
+
+<style>
+    /* --- Custom Styles for a Professional and Responsive Look --- */
+
+    /* 1. Base Styles for Status Labels */
+    .label-badge {
+        color: white;
+        padding: 5px 10px; /* Reduced padding slightly */
+        display: inline-block;
+        border-radius: 9999px; /* Pill shape */
+        font-weight: 600; /* Bolder text */
+        line-height: 1.2;
+        font-size: 0.85rem;
+        min-width: 80px; /* Ensure minimum width for consistency */
+        text-align: center;
+    }
+
+    /* Status Color Classes */
+    .status-pending { color: #E74C3C; } /* Blue/Info */
+    .status-approved { background-color: #06A77D; } /* Success/Teal Green */
+    .status-rejected { background-color: #E74C3C; } /* Danger/Red */
+
+    /* 2. Table Header and Design */
+    .table-header {
+        background-color: #8C0000; /* Darker, richer blood color */
+        color: white;
+        border-bottom: 3px solid #6D0000;
+        font-weight: 700;
+    }
+
+    /* 3. Action Buttons */
+    .btn-action-sm {
+        /* Default size for desktop/tablet */
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        margin: 2px;
+        transition: all 0.2s ease;
+    }
+
+    /* 4. MOBILE SPECIFIC STYLES (Max-width 575.98px) */
+    @media (max-width: 576px) {
+        /* Reduce padding around the entire container */
+        .container {
+            padding-left: 0.5rem !important;
+            padding-right: 0.5rem !important;
+        }
+
+        /* Highly condense table cells */
+        .table td, .table th {
+            padding: 0.5rem 0.2rem !important; 
+            font-size: 0.75rem; /* Smaller font for maximum density */
+        }
+        
+        /* Make action buttons tiny and icon-only */
+        .btn-action-sm {
+            width: 32px !important; 
+            height: 32px !important; 
+            padding: 0;
+            margin: 1px;
+            font-size: 0.8rem; 
+            display: inline-flex; 
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Hide the text next to the action icons */
+        .action-text {
+            display: none !important;
+        }
+
+        /* Ensure donor name uses word break for long names */
+        .donor-name-cell {
+             max-width: 80px;
+             word-break: break-all;
+        }
+        
+        /* Smaller pill for labels */
+        .label-badge {
+            padding: 4px 6px;
+            font-size: 0.7rem;
+            min-width: 60px;
+        }
+    }
+</style>
+
+<br>
+<div class="container my-4"> 
+    <!-- Professional Heading -->
+    <H4 class="text-center font-weight-bold text-uppercase pb-3" style="color: #000; letter-spacing: 1.5px;">
+        Blood Donation Requests
+    </H4>
+    
+    <div class="table-responsive">
+        <!-- Using a slightly better table styling mix (hover, bordered, stripe) -->
+        <table class="table table-light table-hover table-bordered table-striped shadow-sm rounded">
+            <thead class="table-header">
+                <tr>
+                    <!-- Donor Name: Always visible -->
+                    <th scope="col" class="text-left">Donor Name</th>
+
+                    <!-- Disease: Hide on mobile (xs) -->
+                    <th scope="col" class="d-none d-sm-table-cell text-center">Disease</th> 
+
+                    <!-- Age: Hide on mobile (xs) -->
+                    <th scope="col" class="d-none d-sm-table-cell text-center">Age</th> 
+
+                    <!-- Blood Group: Always visible, centered -->
+                    <th scope="col" class="text-center">Group</th>
+                    
+                    <!-- Unit: Hide on mobile (xs) -->
+                    <th scope="col" class="d-none d-sm-table-cell text-center">Unit</th> 
+
+                    <!-- Date: Always visible, slightly compressed -->
+                    <th scope="col" class="text-center">Date</th>
+                    
+                    <!-- Status: Always visible, centered -->
+                    <th scope="col" class="text-center">Status</th>
+
+                    <!-- Action: Always visible, dynamic header text -->
+                    <th class="text-center" scope="col">
+                        <span class="d-none d-sm-inline">Action</span>
+                        <span class="d-sm-none d-sm-inline" >Action</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in donations %}
+                <tr>
+                    <td class="donor-name-cell font-weight-bold">{{t.donor}}</td>
+
+                    <!-- Hide on mobile -->
+                    <td class="d-none d-sm-table-cell text-center">{{t.disease | default:"N/A"}}</td> 
+
+                    <!-- Hide on mobile -->
+                    <td class="d-none d-sm-table-cell text-center">{{t.age}}</td> 
+
+                    <td class="text-center">{{t.bloodgroup}}</td>
+                    
+                    <!-- Hide on mobile -->
+                    <td class="d-none d-sm-table-cell text-center">{{t.unit}}</td> 
+
+                    <td class="text-center">{{t.date}}</td>
+                    
+                    <td class="text-center">
+                        {% if t.status == 'Pending' %}
+                            <span class="label-badge status-pending">{{t.status}}</span>
+                        {% elif t.status == 'Approved' %}
+                            <span class="label-badge status-approved">{{t.status}}</span>
+                        {% else %}
+                            <span class="label-badge status-rejected">{{t.status}}</span>
+                        {% endif %}
+                    </td>
+
+                    <!-- ACTION / STATUS COLUMN LOGIC -->
+                    {% if t.status == 'Pending' %}
+                    <td class="text-center text-nowrap">
+                        <!-- Approve Button -->
+                        <a href="{% url 'approve-donation' t.id %}" 
+                           class="btn btn-success badge-pill btn-action-sm shadow-sm" 
+                           title="Approve Donation">
+                            <i class="fas fa-check"></i> 
+                            <span class="action-text d-none d-sm-inline ml-1">Approve</span>
+                        </a>
+                        <!-- Reject Button -->
+                        <a href="{% url 'reject-donation' t.id %}" 
+                           class="btn btn-danger badge-pill btn-action-sm shadow-sm" 
+                           title="Reject Donation">
+                            <i class="fas fa-times"></i> 
+                            <span class="action-text d-none d-sm-inline ml-1">Reject</span>
+                        </a>
+                    </td>
+                    {% elif t.status == 'Approved' %}
+                    <td class="text-center">
+                        <span class="label-badge status-approved">{{t.unit}} Unit Added</span>
+                    </td>
+                    {% else %}
+                    <td class="text-center">
+                        <span class="label-badge status-rejected">0 Unit Added</span>
+                    </td> 
+                    {% endif %}
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}

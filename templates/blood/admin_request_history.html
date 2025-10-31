@@ -1,0 +1,122 @@
+{% extends 'blood/adminbase.html' %}
+{% block content %}
+{% load widget_tweaks %}
+{%load static%}
+
+<style>
+/* --- 1. Base Styles for Status Labels (Refined) --- */
+.label {
+    color: white;
+    padding: 8px;
+    display: inline-block; 
+    border-radius: 4px;
+    font-weight: 500;
+    line-height: 1;
+}
+
+.success {background-color: #4CAF50;} /* Green */
+.info {background-color: #2196F3;} /* Blue */
+.warning {background-color: #ff9800;} /* Orange */
+.danger {background-color: #f44336;} /* Red */
+.other {background-color: #e7e7e7; color: black;} /* Gray */
+
+
+/* --- 2. CSS FIX FOR TABLE WRAPPING & SPACING --- */
+
+/* Fix: Prevent text from wrapping onto multiple lines */
+/* Applied to TH cells to keep headers readable on one line */
+.table th {
+    white-space: nowrap;
+}
+/* Applied to TD cells to keep content (like blood group or date) on one line */
+.table td {
+    white-space: nowrap;
+    /* Optional: word-break: keep-all; can also help ensure words aren't broken */
+}
+
+/* Fix: CSS Override for excessive top spacing (as discussed previously) */
+.container.mt-4 {
+    /* Adjust this value if the gap is still too big or too small */
+    margin-top: 1.5rem !important; 
+    padding-top: 0 !important; 
+}
+
+
+/* --- 3. MOBILE SPECIFIC STYLES (Adjusted) --- */
+@media (max-width: 576px) {
+    /* Reduce overall container padding for maximum space */
+    .container {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+    }
+
+    /* Reduce padding/margin inside table cells and font size */
+    .table td, .table th {
+        padding: 0.5rem 0.2rem !important; /* Slightly smaller padding for denser view */
+        font-size: 0.7rem; 
+    }
+
+    /* We keep table-shrink-sm only on long text fields like Reason/Disease if needed, 
+       but for this table, we'll try removing it for now to prioritize nowrap. */
+    .table-shrink-sm {
+        /* Keeping this class defined, but we will remove it from the HTML columns where possible */
+        max-width: 60px;
+    }
+
+    /* Ensure the status label itself is compact */
+    .label {
+        padding: 4px 6px;
+        font-size: 0.7rem;
+        white-space: nowrap; /* Ensure status text doesn't wrap */
+    }
+}
+</style>
+
+<div class="container mt-4 px-2 px-sm-3"> 
+    
+    <H4 class="text-center mb-3">Blood Request History</H4>
+    {% if message %}
+        <h5 class="text-center" style="color: red;"> {{message}}</h5>
+        <br> 
+    {% endif %}
+
+    <div class="table-responsive">
+       <table class="table table-light table-hover table-bordered table-striped">
+        <thead style="background-color: #48060dff; color: white;">
+                <tr>
+                    <th scope="col">Patient Name</th>
+                    <th scope="col">Age</th> 
+                    
+                    <th scope="col">Reason</th> 
+                    <th scope="col">Blood Group</th>
+                    <th scope="col">Unit</th> 
+                    <th scope="col">Date</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Stock Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in requests %}
+                <tr>
+                    <td> {{t.patient_name}}</td>
+                    <td>{{t.patient_age}}</td> 
+                    
+                    <td class="table-shrink-sm">{{t.reason}}</td> <td>{{t.bloodgroup}}</td>
+                    <td>{{t.unit}}</td> 
+                    <td>{{t.date}}</td>
+                    
+                    {% if t.status == 'Approved' %}
+                    <td><span class="label warning"> Approved</span></td>
+                    <td><span class="label warning"> {{t.unit}} Unit Deducted From Stock</span></td>
+                    {% else %}
+                    <td><span class="label success">Rejected</span></td>
+                    <td><span class="label success"> 0 Unit Deducted From Stock</span></td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+ 
+{% endblock content %}

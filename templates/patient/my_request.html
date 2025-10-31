@@ -1,0 +1,111 @@
+{% extends 'patient/patientbase.html' %}
+{% block content %}
+{% load widget_tweaks %}
+{%load static%}
+ 
+<head>
+    <style>
+        .label {
+            color: white;
+            padding: 8px;
+        }
+        
+        .success {background-color: #4CAF50;} /* Green */
+        .info {background-color: #2196F3;} /* Blue */
+        .warning {background-color: #ff9800;} /* Orange */
+        .danger {background-color: #f44336;} /* Red */
+        .other {background-color: #e7e7e7; color: black;} /* Gray */
+
+        /* --- RESPONSIVE TABLE CSS for Small Screens --- */
+
+        @media screen and (max-width: 768px) {
+            
+            /* 1. Hide the original wide table headers */
+            .table-responsive-mobile thead {
+                display: none;
+            }
+
+            /* 2. Make each table row (<tr>) a distinct block/card */
+            .table-responsive-mobile tbody tr {
+                display: block;
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                padding: 10px;
+                background: #fff; 
+            }
+
+            /* 3. Make each table cell (<td>) a label-value pair */
+            .table-responsive-mobile tbody td {
+                display: flex; 
+                justify-content: space-between; /* Pushes label and data to opposite ends */
+                align-items: center;
+                text-align: right;
+                padding: 8px 0;
+                border-bottom: 1px solid #eee; /* Separator for each field */
+            }
+
+            /* Remove the separator from the last field in the card */
+            .table-responsive-mobile tbody td:last-child {
+                border-bottom: none; 
+            }
+
+            /* 4. Insert the heading (label) before the data value */
+            .table-responsive-mobile tbody td::before {
+                /* Gets the heading text from the data-label attribute */
+                content: attr(data-label) ":"; 
+                float: left;
+                font-weight: bold;
+                text-align: left;
+                flex-basis: 50%; /* Give the label half the space */
+                color: #48060dff; /* Use your theme color for the label */
+            }
+        }
+    </style>
+</head>
+<br><br>
+<div class="container">
+    <H4 class="text-center">My Blood Request</H4><br>
+    
+    <table class="table table-hover table-bordered table-striped table-responsive-mobile" >
+        <thead style="background-color: #48060dff; color: white;" >
+            <tr>
+                <th scope="col">Patient Name</th>
+                <th scope="col">Patient Age</th>
+                <th scope="col">Reason</th>
+                <th scope="col">Blood Group</th>
+                <th scope="col">Unit</th>
+                <th scope="col">Date</th>
+                <th scope="col">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in blood_request %}
+            <tr>
+                <td data-label="Patient Name"> {{t.patient_name}}</td>
+                <td data-label="Patient Age">{{t.patient_age}}</td>
+                <td data-label="Reason">{{t.reason}}</td>
+                <td data-label="Blood Group">{{t.bloodgroup}}</td>
+                <td data-label="Unit">{{t.unit}}</td>
+                <td data-label="Date">{{t.date}}</td>
+                
+                <td data-label="Status">
+                    {% if t.status == 'Approved' %}
+                    <span class="label warning"> Approved</span>
+                    
+                    {% elif t.status == 'Rejected' %}
+                    <span class="label success">Rejected</span>
+                    {% else %}
+                    <span style="color: white;margin-left: 0px;" class="label info">Pending</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    
+    </table>
+</div>
+
+
+{% endblock content %}

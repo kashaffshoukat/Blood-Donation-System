@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DONOR</title>
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.css">
+
+    <style>
+
+  .bg-\[\#48060dff\] {
+          background-color: #48060dff !important;
+      }
+
+  
+
+    .row{
+        padding: 5px;
+    }
+    .fa-tint{    
+        color: red;    
+    }
+    .blood{
+        float: right;
+    }
+    .fa-users{    
+        color: blue;
+        font-size: 3ex;  
+    }
+    .fa-spinner{    
+        color: blue;
+        font-size: 3ex;  
+    }
+    .fa-check-circle{    
+        color: blue;
+        font-size: 3ex;  
+    }
+    .xyz{    
+        color: blue;
+        font-size: 3ex;  
+    }
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+  text-decoration: none;
+  font-family: 'Josefin Sans', sans-serif;
+}
+
+body{
+    background-color: #f3f5f9;
+}
+.bg-danger {
+    background-color: #ff0018!important;
+}
+
+.wrapper{
+  display: flex;
+  position: relative;
+}
+
+.wrapper .sidebar{
+  width: 200px;
+  height: 100%;
+    background-color: #48060dff !important;
+  padding: 30px 0px;
+  position: fixed;
+  /* Added transition for smooth sliding */
+  transition: transform 0.3s ease; 
+  /* Ensures sidebar is above other content */
+  z-index: 1040; 
+}
+
+
+.wrapper .sidebar ul li{
+  padding: 15px;
+  border-bottom: 1px solid white;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  border-top: 1px solid rgba(255,255,255,0.05);
+}    
+
+.wrapper .sidebar ul li a{
+  color: white;
+  display: block;
+}
+
+.wrapper .sidebar ul li a .fas{
+  width: 25px;
+}
+.wrapper .sidebar:hover{
+  background-color: #48060dff
+}
+.wrapper .sidebar ul li:hover{
+  background-color:  #48060dff;
+  
+}
+    
+.wrapper .sidebar ul li:hover a{
+  color: black;font-size:15px
+}
+ 
+.wrapper .sidebar .social_media{
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+}
+
+.wrapper .sidebar .social_media a{
+  display: block;
+  width: 40px;
+  background: white;
+  height: 40px;
+  line-height: 45px;
+  text-align: center;
+  margin: 0 5px;
+  color: white;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.wrapper .main_content{
+  width: 100%;
+  margin-left: 200px;
+}
+
+.wrapper .main_content .header{
+  padding: 20px;
+  background: #fff;
+  color: #717171;
+  border-bottom: 1px solid #e0e4e8;
+}
+
+.wrapper .main_content .info{
+  margin: 20px;
+  color: #717171;
+  line-height: 25px;
+}
+
+.wrapper .main_content .info div{
+  margin-bottom: 20px;
+}
+
+@media (max-height: 500px){
+  .social_media{
+    display: none !important;
+  }
+}
+.fa-sign-out-alt{
+    color: white;
+    font-size: 2ex;
+}
+
+/* ------------------------------------------- */
+/* --- REVISED CODE FOR SMALL SCREEN STYLES --- */
+/* ------------------------------------------- */
+
+/* Initially hide the menu icon for desktop */
+.menu-toggle {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    /* Sidebar is initially off-screen (Overlay approach) */
+    .wrapper .sidebar {
+        /* Pushes the sidebar completely to the left */
+        transform: translateX(-200px); 
+    }
+
+    /* Sidebar moves into view when the 'active' class is present */
+    .wrapper .sidebar.active {
+        /* Brings the sidebar back into view */
+        transform: translateX(0); 
+    }
+
+    /* Main content should take full width on mobile and must NOT have left margin */
+    .wrapper .main_content {
+        width: 100%;
+        margin-left: 0; /* REMOVED margin-left: 200px from mobile */
+    }
+
+    /* Show the menu toggle icon on small screens */
+    .menu-toggle {
+        display: block; 
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: white;
+        z-index: 1031; 
+    }
+}
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-[#48060dff] fixed-top ">
+        <span class="menu-toggle" id="sidebar-toggle">
+            <i class="fas fa-bars fa-lg"></i>
+        </span>
+        <a class="navbar-brand" href="/" style="margin-left: 45px;">
+             <i class="fas fa-hand-holding-heart"></i>  Blood Donation System
+        </a>        
+      
+        <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" style="color: white;" href="/logout">Logout &nbsp; <i class="fas fa-sign-out-alt"></i></a>
+                </li>
+                
+            </ul>
+        </div>
+      </nav>
+<br><br>
+<div class="wrapper">
+    <div class="sidebar" id="sidebar"> 
+        
+        <ul>
+            <li><a style="text-decoration:none;color:white" href="/"><i class="fas fa-home"></i>Home</a></li>
+            <li><a style="text-decoration:none;color:white" href="/donor/donate-blood"><i class="fas fa-hand-holding-medical"></i>Donate Blood</a></li>
+            <li><a style="text-decoration:none;color:white" href="/donor/donation-history"><i class="fas fa-history"></i>Donation History</a></li>
+
+        
+        </ul> 
+
+    </div>
+    <div class="main_content" id="main-content">
+        {% block content %}
+
+{% endblock content %}
+
+
+
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleBtn = document.getElementById('sidebar-toggle');
+        const sidebar = document.getElementById('sidebar');
+        // No need to reference main-content for the overlay design
+
+        toggleBtn.addEventListener('click', function () {
+            // Toggle the 'active' class on the sidebar to slide it in/out
+            sidebar.classList.toggle('active');
+        });
+
+        // Optional: Close sidebar if a link is clicked on mobile
+        const sidebarLinks = sidebar.querySelectorAll('a');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                // Check if the screen is small (based on the CSS media query)
+                if (window.innerWidth <= 768) { 
+                    sidebar.classList.remove('active');
+                }
+            });
+        });
+
+    });
+</script>
+ 
+</body>
+</html>

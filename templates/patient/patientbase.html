@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PATIENT</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.css">
+
+    <style>
+        /* The main navbar color, set to the dark maroon from the sample image */
+        .bg-\[\#48060dff\] {
+            background-color: #48060dff !important;
+        }
+
+        /* ... (Your existing global CSS) ... */
+
+        .row{ padding: 5px; }
+        .fa-tint{ color: red; }
+        .blood{ float: right; }
+        /* Adjusted icons to white for better contrast against the dark navbar/sidebar */
+        .fa-users, .fa-spinner, .fa-check-circle, .xyz{ color: white; font-size: 3ex; }
+        
+        *{
+             margin: 0; padding: 0; box-sizing: border-box; list-style: none;
+             text-decoration: none; font-family: 'Josefin Sans', sans-serif;
+        }
+
+        body{ background-color: #f3f5f9; }
+        .cardI{ background-color: #48060dff !important; }
+        .wrapper{ display: flex; position: relative; }
+
+        .wrapper .sidebar{
+             width: 200px; height: 100%;
+             background-color: #48060dff !important;
+             padding: 30px 0px; position: fixed;
+             transition: all 0.3s ease; 
+             z-index: 1000; 
+        }
+
+        .wrapper .sidebar h2{
+             color: #fff; text-transform: uppercase; text-align: center;
+             margin-bottom: 30px;
+        }
+
+        .wrapper .sidebar ul li{
+             padding: 15px; border-bottom: 1px solid white;
+             border-bottom: 1px solid rgba(0,0,0,0.05);
+             border-top: 1px solid rgba(255,255,255,0.05);
+        }     
+
+        .wrapper .sidebar ul li a{ color: white; display: block; }
+        .wrapper .sidebar ul li a .fas{ width: 25px; }
+        .wrapper .sidebar ul li:hover{ background-color: #48060dff !important; color:black }
+        .wrapper .sidebar ul li:hover a{ color: #fff; }
+        
+        .wrapper .sidebar .social_media{
+             position: absolute; bottom: 0; left: 50%;
+             transform: translateX(-50%); display: flex;
+        }
+
+        .wrapper .main_content{
+             width: 100%; margin-left: 200px; 
+             transition: margin-left 0.3s ease;
+        }
+
+        /* --- DESKTOP TOGGLE: Sidebar Closed --- */
+        .wrapper.active .sidebar { margin-left: -200px; }
+        .wrapper.active .main_content { margin-left: 0; }
+
+        /* --- MOBILE STYLES (Screen <= 768px) --- */
+        @media (max-width: 768px) {
+            /* 1. Show the Menu/Toggle Icon in the Navbar */
+            #sidebar-menu-toggle {
+                display: block !important; 
+                color: white;
+                font-size: 24px;
+                cursor: pointer;
+            }
+            
+            /* 2. Style the Mobile Logout Button to sit inline */
+            .navbar .mobile-logout {
+                display: block !important;
+                color: white;
+                font-size: 16px; /* slightly smaller than desktop */
+                padding: 0 10px;
+                line-height: 40px; /* Vertically center with the navbar brand */
+            }
+
+            /* 3. Hide the desktop logout link */
+            .navbar .desktop-logout {
+                display: none !important;
+            }
+
+            /* 4. Initially hide the sidebar off-screen (CLOSED BY DEFAULT) */
+            .wrapper .sidebar { margin-left: -200px; }
+
+            /* 5. Main content takes full width (no offset) */
+            .wrapper .main_content { margin-left: 0; }
+
+            /* 6. MOBILE TOGGLE: When active (open), bring the sidebar into view */
+            .wrapper.active .sidebar { margin-left: 0; }
+            .wrapper.active .main_content { margin-left: 0; } 
+        }
+
+        .fa-sign-out-alt{ color: white; font-size: 2ex; }
+        
+        /* Ensure the logout link is always styled correctly on desktop */
+        .navbar .desktop-logout {
+             display: block; /* Visible on desktop */
+        }
+        .navbar .mobile-logout {
+             display: none; /* Hidden on desktop */
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-[#48060dff] fixed-top bg-danger">
+        <i class="fas fa-bars" id="sidebar-menu-toggle" style="display: none;"></i> 
+
+        <a class="navbar-brand" href="/">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <i class="fas fa-hand-holding-heart"></i> Blood Donation System
+        </a>
+        
+        <a class="nav-link mobile-logout ml-auto" href="/logout">
+            <i class="fas fa-sign-out-alt"></i>
+        </a>
+
+        <div class="collapse navbar-collapse w-100 order-3 dual-collapse2">
+            <ul class="navbar-nav ml-auto desktop-logout">
+                <li class="nav-item">
+                    <a class="nav-link" style="color: white;" href="/logout">Logout &nbsp; <i class="fas fa-sign-out-alt"></i></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+<br><br>
+<div class="wrapper" id="wrapper">
+    <div class="sidebar">
+        <ul>
+            <li><a style="text-decoration:none; color:white" href="/"><i class="fas fa-home"></i>Home</a></li>
+            <li><a style="text-decoration:none;color:white" href="/patient/make-request"><i class="fas fa-sync-alt"></i>Make Request</a></li>
+            <li><a style="text-decoration:none;color:white" href="/patient/my-request"><i class="fas fa-history"></i>Request History</a></li>
+        </ul> 
+    </div>
+    <div class="main_content">
+
+{% block content %}
+
+{% endblock content %}
+
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+    <script>
+        $(document).ready(function(){
+            var $wrapper = $('#wrapper');
+            var $menuToggle = $('#sidebar-menu-toggle');
+            
+            // Function to toggle the sidebar and swap the icon
+            function toggleSidebar() {
+                $wrapper.toggleClass('active');
+                
+                // Swap the icon based on the sidebar state
+                if ($wrapper.hasClass('active')) {
+                    // Sidebar is closing on desktop / opening on mobile
+                    $menuToggle.removeClass('fa-bars').addClass('fa-times');
+                } else {
+                    // Sidebar is opening on desktop / closing on mobile
+                    $menuToggle.removeClass('fa-times').addClass('fa-bars');
+                }
+            }
+
+            // --- Toggle Click Handler ---
+            $menuToggle.on('click', function(){
+                toggleSidebar();
+            });
+
+            // --- INITIALIZATION and RESIZE ---
+            function handleResize() {
+                if ($(window).width() > 768) {
+                    // Large screens (Desktop): Sidebar is OPEN by default, no 'active' class.
+                    $wrapper.removeClass('active');
+                    $menuToggle.removeClass('fa-times').addClass('fa-bars');
+                } else {
+                    // Small screens (Mobile): Sidebar is CLOSED by default, no 'active' class.
+                    $wrapper.removeClass('active');
+                    $menuToggle.removeClass('fa-times').addClass('fa-bars');
+                }
+            }
+
+            // Call on load and on resize
+            $(window).on('resize', handleResize).resize();
+        });
+    </script>
+</body>
+</html>
